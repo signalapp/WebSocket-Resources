@@ -1,5 +1,6 @@
 package org.whispersystems.websocket.session;
 
+import com.google.common.base.Optional;
 import org.whispersystems.websocket.WebSocketClient;
 
 import java.util.LinkedList;
@@ -22,8 +23,12 @@ public class WebSocketSessionContext {
     this.authenticated = authenticated;
   }
 
-  public Object getAuthenticated() {
-    return authenticated;
+  public <T> Optional<T> getAuthenticated(Class<T> clazz) {
+    if (clazz.isInstance(authenticated)) {
+      return Optional.fromNullable(clazz.cast(authenticated));
+    }
+
+    return Optional.absent();
   }
 
   public synchronized void addListener(WebSocketEventListener listener) {

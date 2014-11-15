@@ -1,5 +1,6 @@
 package org.whispersystems.websocket.auth;
 
+import com.google.common.base.Optional;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.model.Parameter;
 import com.sun.jersey.core.spi.component.ComponentContext;
@@ -16,7 +17,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.security.Principal;
 
-public class WebSocketAuthProvider implements InjectableProvider<WebSocketAuth, Parameter> {
+import io.dropwizard.auth.Auth;
+
+public class WebSocketAuthProvider implements InjectableProvider<Auth, Parameter> {
 
   private static final Logger logger = LoggerFactory.getLogger(WebSocketAuthProvider.class);
 
@@ -36,10 +39,10 @@ public class WebSocketAuthProvider implements InjectableProvider<WebSocketAuth, 
 
       if (principal != null && principal instanceof WebSocketServletRequest.ContextPrincipal) {
         WebSocketSessionContext context       = ((WebSocketServletRequest.ContextPrincipal)principal).getContext();
-        Object                  authenticated = context.getAuthenticated();
+        Optional<T>             authenticated = context.getAuthenticated(clazz);
 
-        if (authenticated != null && clazz.isInstance(authenticated)) {
-          return clazz.cast(authenticated);
+        if (authenticated.isPresent()) {
+          return authenticated.get();
         }
       }
 
@@ -57,7 +60,7 @@ public class WebSocketAuthProvider implements InjectableProvider<WebSocketAuth, 
   }
 
   @Override
-  public Injectable getInjectable(ComponentContext ic, WebSocketAuth a, Parameter c) {
+  public Injectable getInjectable(ComponentContext ic, Auth a, Parameter c) {
     return new WebSocketAuthInjectable(a.required(), c.getParameterClass());
   }
 }
