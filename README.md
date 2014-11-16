@@ -56,10 +56,12 @@ WebSocket-Resources and register a standard Jersey resource:
     webSocketEnvironment.jersey().register(new MailResource());
     webSocketEnvironment.setAuthenticator(new MyWebSocketAuthenticator());
 
-    WebSocketResourceProviderFactory servlet = new WebSocketResourceProviderFactory(webSocketEnvironment);
-    ServletRegistration.Dynamic websocket    = environment.servlets().addServlet("WebSocket", servlet);
-    websocket.addMapping("/v1/websocket/*");
+    WebSocketResourceProviderFactory servlet   = new WebSocketResourceProviderFactory(webSocketEnvironment);
+    ServletRegistration.Dynamic      websocket = environment.servlets().addServlet("WebSocket", servlet);
+
+    websocket.addMapping("/api/v1/websocket/*");
     websocket.setAsyncSupported(true);
+    servlet.start();
     
     ...    
   }
