@@ -14,7 +14,10 @@ public class MailResource {
   @POST
   @Path("/{destination}/")
   @Consumes(MediaType.APPLICATION_JSON_TYPE)
-  public void createAccount(@Auth Account sender, Message message) {
+  public void sendMessage(@Auth Account sender, 
+                          @PathParam("destination") String destination,
+                          @Valid Message message) 
+  {
     ...
   }
 }
@@ -22,11 +25,12 @@ public class MailResource {
 
 Using JAX-RS annotations and some Dropwizard glue, we can easily define a set of resource methods
 that allow an authenticated sender to POST a JSON Message object.  All of the routing, parsing,
-and authentication are taken care of, and the resource method can focus on the business logic.
+validation, and authentication are taken care of, and the resource method can focus on the business
+logic.
 
 What if we want to expose a similar API over a WebSocket?  It's not pretty.  We have to define our
-own sub-protocol, do all of the parsing ourselves, keep track of the connection state, and do our
-own routing.  It's basically the equivalent of writing a raw servlet with some additional complexity.
+own sub-protocol, do all of the parsing and validation ourselves, keep track of the connection state,
+and do our own routing.  It's basically the equivalent of writing a raw servlet, but worse.
 
 ## The WebSocket-Resources model
 
@@ -144,7 +148,11 @@ public class MailResource {
   @POST
   @Path("/{destination}/")
   @Consumes(MediaType.APPLICATION_JSON_TYPE)
-  public void createAccount(@Auth Account sender, @WebSocketSession WebSocketSessionContext context, Message message) {
+  public void sendMessage(@Auth Account sender, 
+                          @WebSocketSession WebSocketSessionContext context, 
+                          @PathParam("destination") String destination,
+                          @Valid Message message) 
+  {
     WebSocketClient client = context.getClient();
     ...
   }
