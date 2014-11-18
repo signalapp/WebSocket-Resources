@@ -7,9 +7,33 @@
         <maven>3.0.0</maven>
     </prerequisites>
 
-    <groupId>org.whispersystems.websocket</groupId>
+    <groupId>org.whispersystems</groupId>
     <artifactId>websocket-resources</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
+
+    <name>WebSocket-Resources</name>
+    <description>A Dropwizard library that lets you use Jersey-style Resources over WebSockets</description>
+    <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
+
+    <licenses>
+        <license>
+            <name>AGPLv3</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Moxie Marlinspike</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
+        <connection>scm:git:https://github.com/WhisperSystems/WebSocket-Resources.git</connection>
+        <developerConnection>scm:git:https://github.com/WhisperSystems/WebSocket-Resources.git</developerConnection>
+    </scm>
 
     <properties>
         <dropwizard.version>0.7.1</dropwizard.version>
@@ -116,6 +140,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
 
