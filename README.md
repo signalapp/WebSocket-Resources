@@ -2,6 +2,16 @@
 
 A Dropwizard library that lets you use Jersey-style Resources over WebSockets.
 
+Install from maven central:
+
+```
+<dependency>
+  <groupId>org.whispersystems</groupId>
+  <artifactId>websocket-resources</artifactId>
+  <version>${latest_version}</version>
+</dependency>
+```
+
 ## The problem
 
 In the standard HTTP world, we might use Jersey to define a set of REST APIs:
