@@ -19,15 +19,18 @@ package org.whispersystems.websocket.setup;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
+import org.eclipse.jetty.server.RequestLog;
 import org.whispersystems.websocket.auth.WebSocketAuthenticator;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 import org.whispersystems.websocket.messages.protobuf.ProtobufWebSocketMessageFactory;
 
 import javax.validation.Validator;
 
+import io.dropwizard.Configuration;
 import io.dropwizard.jersey.DropwizardResourceConfig;
 import io.dropwizard.jersey.setup.JerseyContainerHolder;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.server.AbstractServerFactory;
 import io.dropwizard.setup.Environment;
 
 public class WebSocketEnvironment {
@@ -36,16 +39,18 @@ public class WebSocketEnvironment {
   private final JerseyEnvironment     jerseyEnvironment;
   private final ObjectMapper          objectMapper;
   private final Validator             validator;
+  private final RequestLog            requestLog;
 
   private WebSocketAuthenticator authenticator;
   private WebSocketMessageFactory   messageFactory;
   private WebSocketConnectListener  connectListener;
 
-  public WebSocketEnvironment(Environment environment) {
+  public WebSocketEnvironment(Environment environment, Configuration configuration) {
     DropwizardResourceConfig jerseyConfig = new DropwizardResourceConfig(environment.metrics());
 
     this.objectMapper           = environment.getObjectMapper();
     this.validator              = environment.getValidator();
+    this.requestLog             = ((AbstractServerFactory)configuration.getServerFactory()).getRequestLogFactory().build("websocket");
     this.jerseyServletContainer = new JerseyContainerHolder(new ServletContainer(jerseyConfig)  );
     this.jerseyEnvironment      = new JerseyEnvironment(jerseyServletContainer, jerseyConfig);
     this.messageFactory         = new ProtobufWebSocketMessageFactory();
@@ -65,6 +70,10 @@ public class WebSocketEnvironment {
 
   public ObjectMapper getObjectMapper() {
     return objectMapper;
+  }
+
+  public RequestLog getRequestLog() {
+    return requestLog;
   }
 
   public Validator getValidator() {

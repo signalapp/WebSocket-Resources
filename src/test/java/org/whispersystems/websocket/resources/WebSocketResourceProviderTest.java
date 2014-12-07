@@ -1,6 +1,7 @@
 package org.whispersystems.websocket.resources;
 
 import com.google.common.base.Optional;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.websocket.api.CloseStatus;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
@@ -27,7 +28,8 @@ public class WebSocketResourceProviderTest {
   public void testOnConnect() throws AuthenticationException, IOException {
     HttpServlet                    contextHandler = mock(HttpServlet.class);
     WebSocketAuthenticator<String> authenticator  = mock(WebSocketAuthenticator.class);
-    WebSocketResourceProvider provider       = new WebSocketResourceProvider(contextHandler,
+    RequestLog                     requestLog     = mock(RequestLog.class);
+    WebSocketResourceProvider provider       = new WebSocketResourceProvider(contextHandler, requestLog,
                                                                              Optional.of((WebSocketAuthenticator)authenticator),
                                                                              new ProtobufWebSocketMessageFactory(),
                                                                              Optional.<WebSocketConnectListener>absent());
@@ -70,7 +72,8 @@ public class WebSocketResourceProviderTest {
   public void testRouteMessage() throws Exception {
     HttpServlet                    servlet       = mock(HttpServlet.class           );
     WebSocketAuthenticator<String> authenticator = mock(WebSocketAuthenticator.class);
-    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.<WebSocketConnectListener>absent());
+    RequestLog                     requestLog    = mock(RequestLog.class            );
+    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, requestLog, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.<WebSocketConnectListener>absent());
 
     Session        session        = mock(Session.class       );
     RemoteEndpoint remoteEndpoint = mock(RemoteEndpoint.class);

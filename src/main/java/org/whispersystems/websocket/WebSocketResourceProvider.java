@@ -18,6 +18,7 @@ package org.whispersystems.websocket;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.SettableFuture;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 import org.whispersystems.websocket.messages.WebSocketRequestMessage;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
+import org.whispersystems.websocket.servlet.LoggableRequest;
+import org.whispersystems.websocket.servlet.LoggableResponse;
 import org.whispersystems.websocket.servlet.NullServletResponse;
 import org.whispersystems.websocket.servlet.WebSocketServletRequest;
 import org.whispersystems.websocket.servlet.WebSocketServletResponse;
@@ -56,16 +59,19 @@ public class WebSocketResourceProvider implements WebSocketListener {
   private final WebSocketMessageFactory            messageFactory;
   private final Optional<WebSocketConnectListener> connectListener;
   private final HttpServlet                        servlet;
+  private final RequestLog                         requestLog;
 
   private Session                 session;
   private WebSocketSessionContext context;
 
   public WebSocketResourceProvider(HttpServlet                        servlet,
+                                   RequestLog                         requestLog,
                                    Optional<WebSocketAuthenticator>   authenticator,
                                    WebSocketMessageFactory            messageFactory,
                                    Optional<WebSocketConnectListener> connectListener)
   {
     this.servlet         = servlet;
+    this.requestLog      = requestLog;
     this.authenticator   = authenticator;
     this.messageFactory  = messageFactory;
     this.connectListener = connectListener;
@@ -154,6 +160,7 @@ public class WebSocketResourceProvider implements WebSocketListener {
 
       servlet.service(servletRequest, servletResponse);
       servletResponse.flushBuffer();
+      requestLog.log(new LoggableRequest(servletRequest), new LoggableResponse(servletResponse));
     } catch (IOException | ServletException e) {
       logger.warn("Servlet Error", e);
       sendErrorResponse(requestMessage, Response.status(500).build());

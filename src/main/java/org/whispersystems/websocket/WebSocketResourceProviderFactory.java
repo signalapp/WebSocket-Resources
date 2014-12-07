@@ -77,6 +77,7 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
   @Override
   public Object createWebSocket(UpgradeRequest req, UpgradeResponse resp) {
     return new WebSocketResourceProvider(this.environment.getJerseyServletContainer(),
+                                         this.environment.getRequestLog(),
                                          Optional.fromNullable(this.environment.getAuthenticator()),
                                          this.environment.getMessageFactory(),
                                          Optional.fromNullable(this.environment.getConnectListener()));
