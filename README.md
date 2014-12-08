@@ -62,7 +62,7 @@ WebSocket-Resources and register a standard Jersey resource:
   public void run(WhisperServerConfiguration config, Environment environment)
       throws Exception
   {
-    WebSocketEnvironment webSocketEnvironment = new WebSocketEnvironment(environment);
+    WebSocketEnvironment webSocketEnvironment = new WebSocketEnvironment(environment, config);
     webSocketEnvironment.jersey().register(new MailResource());
     webSocketEnvironment.setAuthenticator(new MyWebSocketAuthenticator());
 
