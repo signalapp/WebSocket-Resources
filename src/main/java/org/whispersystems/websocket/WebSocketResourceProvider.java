@@ -16,6 +16,7 @@
  */
 package org.whispersystems.websocket;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.SettableFuture;
 import org.eclipse.jetty.server.RequestLog;
@@ -23,8 +24,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.whispersystems.websocket.auth.AuthenticationException;
-import org.whispersystems.websocket.auth.WebSocketAuthenticator;
 import org.whispersystems.websocket.messages.InvalidMessageException;
 import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
@@ -55,7 +54,7 @@ public class WebSocketResourceProvider implements WebSocketListener {
 
   private final Map<Long, SettableFuture<WebSocketResponseMessage>> requestMap = new ConcurrentHashMap<>();
 
-  private final Optional<WebSocketAuthenticator>   authenticator;
+  private final Object                             authenticated;
   private final WebSocketMessageFactory            messageFactory;
   private final Optional<WebSocketConnectListener> connectListener;
   private final HttpServlet                        servlet;
@@ -66,42 +65,26 @@ public class WebSocketResourceProvider implements WebSocketListener {
 
   public WebSocketResourceProvider(HttpServlet                        servlet,
                                    RequestLog                         requestLog,
-                                   Optional<WebSocketAuthenticator>   authenticator,
+                                   Object                             authenticated,
                                    WebSocketMessageFactory            messageFactory,
                                    Optional<WebSocketConnectListener> connectListener)
   {
     this.servlet         = servlet;
     this.requestLog      = requestLog;
-    this.authenticator   = authenticator;
+    this.authenticated   = authenticated;
     this.messageFactory  = messageFactory;
     this.connectListener = connectListener;
   }
 
   @Override
   public void onWebSocketConnect(Session session) {
-    try {
-      this.session = session;
-      this.context = new WebSocketSessionContext(new WebSocketClient(session, messageFactory, requestMap));
+    this.session = session;
+    this.context = new WebSocketSessionContext(new WebSocketClient(session, messageFactory, requestMap));
+    this.context.setAuthenticated(authenticated);
+    this.session.setIdleTimeout(30000);
 
-      this.session.setIdleTimeout(30000);
-
-      logger.debug("onWebSocketConnect(), authenticating: " + (authenticator.isPresent()));
-
-      if (authenticator.isPresent()) {
-        Optional authenticated = authenticator.get().authenticate(session.getUpgradeRequest());
-
-        if (authenticated.isPresent()) {
-          this.context.setAuthenticated(authenticated.get());
-        }
-      }
-
-      if (connectListener.isPresent()) {
-        connectListener.get().onWebSocketConnect(this.context);
-      }
-
-    } catch (AuthenticationException e) {
-      logger.warn("Authentication", e);
-      close(session, 1011, "Server error");
+    if (connectListener.isPresent()) {
+      connectListener.get().onWebSocketConnect(this.context);
     }
   }
 
@@ -206,5 +189,10 @@ public class WebSocketResourceProvider implements WebSocketListener {
 
       session.getRemote().sendBytesByFuture(ByteBuffer.wrap(response.toByteArray()));
     }
+  }
+
+  @VisibleForTesting
+  WebSocketSessionContext getContext() {
+    return context;
   }
 }

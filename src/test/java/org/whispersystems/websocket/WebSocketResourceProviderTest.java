@@ -1,4 +1,4 @@
-package org.whispersystems.websocket.resources;
+package org.whispersystems.websocket;
 
 import com.google.common.base.Optional;
 import org.eclipse.jetty.server.RequestLog;
@@ -30,7 +30,7 @@ public class WebSocketResourceProviderTest {
     WebSocketAuthenticator<String> authenticator  = mock(WebSocketAuthenticator.class);
     RequestLog                     requestLog     = mock(RequestLog.class);
     WebSocketResourceProvider provider       = new WebSocketResourceProvider(contextHandler, requestLog,
-                                                                             Optional.of((WebSocketAuthenticator)authenticator),
+                                                                             null,
                                                                              new ProtobufWebSocketMessageFactory(),
                                                                              Optional.<WebSocketConnectListener>absent());
 
@@ -42,31 +42,10 @@ public class WebSocketResourceProviderTest {
 
     provider.onWebSocketConnect(session);
 
-    verify(authenticator).authenticate(eq(request));
-
     verify(session, never()).close(anyInt(), anyString());
     verify(session, never()).close();
     verify(session, never()).close(any(CloseStatus.class));
   }
-
-//  @Test
-//  public void testOnConnectMissingCredentials() throws AuthenticationException, IOException {
-//    HttpServlet                    servlet       = mock(HttpServlet.class           );
-//    WebSocketAuthenticator<String> authenticator = mock(WebSocketAuthenticator.class);
-//    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, authenticator, new ProtobufWebSocketMessageFactory());
-//
-//    Session        session = mock(Session.class       );
-//    UpgradeRequest request = mock(UpgradeRequest.class);
-//
-//    when(session.getUpgradeRequest()).thenReturn(request);
-//    when(authenticator.authenticate(request)).thenReturn(Optional.<String>absent());
-//
-//    provider.onWebSocketConnect(session);
-//
-//    verify(authenticator).authenticate(eq(request));
-//
-//    verify(session).close(eq(4001), anyString());
-//  }
 
   @Test
   public void testRouteMessage() throws Exception {
