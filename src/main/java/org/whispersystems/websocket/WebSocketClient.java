@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.WebSocketException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.messages.WebSocketMessage;
@@ -61,7 +62,7 @@ public class WebSocketClient {
 
     try {
       session.getRemote().sendBytes(ByteBuffer.wrap(requestMessage.toByteArray()));
-    } catch (IOException e) {
+    } catch (IOException | WebSocketException e) {
       logger.debug("Write", e);
       pendingRequestMapper.remove(requestId);
       future.setException(e);
