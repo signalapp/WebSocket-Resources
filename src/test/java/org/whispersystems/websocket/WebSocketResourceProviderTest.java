@@ -32,7 +32,8 @@ public class WebSocketResourceProviderTest {
     WebSocketResourceProvider provider       = new WebSocketResourceProvider(contextHandler, requestLog,
                                                                              null,
                                                                              new ProtobufWebSocketMessageFactory(),
-                                                                             Optional.<WebSocketConnectListener>absent());
+                                                                             Optional.<WebSocketConnectListener>absent(),
+                                                                             30000);
 
     Session        session = mock(Session.class       );
     UpgradeRequest request = mock(UpgradeRequest.class);
@@ -52,7 +53,7 @@ public class WebSocketResourceProviderTest {
     HttpServlet                    servlet       = mock(HttpServlet.class           );
     WebSocketAuthenticator<String> authenticator = mock(WebSocketAuthenticator.class);
     RequestLog                     requestLog    = mock(RequestLog.class            );
-    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, requestLog, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.<WebSocketConnectListener>absent());
+    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, requestLog, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.<WebSocketConnectListener>absent(), 30000);
 
     Session        session        = mock(Session.class       );
     RemoteEndpoint remoteEndpoint = mock(RemoteEndpoint.class);

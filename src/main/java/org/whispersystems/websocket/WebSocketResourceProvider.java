@@ -59,6 +59,7 @@ public class WebSocketResourceProvider implements WebSocketListener {
   private final Optional<WebSocketConnectListener> connectListener;
   private final HttpServlet                        servlet;
   private final RequestLog                         requestLog;
+  private final long                               idleTimeoutMillis;
 
   private Session                 session;
   private WebSocketSessionContext context;
@@ -67,13 +68,15 @@ public class WebSocketResourceProvider implements WebSocketListener {
                                    RequestLog                         requestLog,
                                    Object                             authenticated,
                                    WebSocketMessageFactory            messageFactory,
-                                   Optional<WebSocketConnectListener> connectListener)
+                                   Optional<WebSocketConnectListener> connectListener,
+                                   long                               idleTimeoutMillis)
   {
-    this.servlet         = servlet;
-    this.requestLog      = requestLog;
-    this.authenticated   = authenticated;
-    this.messageFactory  = messageFactory;
-    this.connectListener = connectListener;
+    this.servlet           = servlet;
+    this.requestLog        = requestLog;
+    this.authenticated     = authenticated;
+    this.messageFactory    = messageFactory;
+    this.connectListener   = connectListener;
+    this.idleTimeoutMillis = idleTimeoutMillis;
   }
 
   @Override
@@ -81,7 +84,7 @@ public class WebSocketResourceProvider implements WebSocketListener {
     this.session = session;
     this.context = new WebSocketSessionContext(new WebSocketClient(session, messageFactory, requestMap));
     this.context.setAuthenticated(authenticated);
-    this.session.setIdleTimeout(30000);
+    this.session.setIdleTimeout(idleTimeoutMillis);
 
     if (connectListener.isPresent()) {
       connectListener.get().onWebSocketConnect(this.context);

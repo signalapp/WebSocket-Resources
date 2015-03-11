@@ -100,7 +100,8 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
                                            this.environment.getRequestLog(),
                                            authenticated,
                                            this.environment.getMessageFactory(),
-                                           Optional.fromNullable(this.environment.getConnectListener()));
+                                           Optional.fromNullable(this.environment.getConnectListener()),
+                                           this.environment.getIdleTimeoutMillis());
     } catch (AuthenticationException | IOException e) {
       logger.warn("Authentication failure", e);
       return null;
