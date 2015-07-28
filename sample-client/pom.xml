@@ -19,6 +19,10 @@
     <name>WebSocket-Resources Sample Client Project</name>
     <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <licenses>
         <license>
             <name>AGPLv3</name>
