@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -69,7 +70,7 @@ public class WebSocketResourceProviderTest {
     verify(session, never()).close();
     verify(session, never()).close(any(CloseStatus.class));
 
-    byte[] message = new ProtobufWebSocketMessageFactory().createRequest(Optional.of(111L), "GET", "/bar", Optional.of("hello world!".getBytes())).toByteArray();
+    byte[] message = new ProtobufWebSocketMessageFactory().createRequest(Optional.of(111L), "GET", "/bar", new LinkedList<String>(), Optional.of("hello world!".getBytes())).toByteArray();
 
     provider.onWebSocketBinary(message, 0, message.length);
 

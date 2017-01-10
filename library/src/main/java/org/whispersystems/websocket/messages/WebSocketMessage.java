@@ -28,4 +28,5 @@ public interface WebSocketMessage {
   public WebSocketRequestMessage  getRequestMessage();
   public WebSocketResponseMessage getResponseMessage();
   public byte[]                   toByteArray();
+
 }

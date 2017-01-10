@@ -45,6 +45,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -184,9 +186,16 @@ public class WebSocketResourceProvider implements WebSocketListener {
 
   private void sendErrorResponse(WebSocketRequestMessage requestMessage, Response error) {
     if (requestMessage.hasRequestId()) {
+      List<String> headers = new LinkedList<>();
+
+      for (String key : error.getStringHeaders().keySet()) {
+        headers.add(key + ":" + error.getStringHeaders().getFirst(key));
+      }
+
       WebSocketMessage response = messageFactory.createResponse(requestMessage.getRequestId(),
                                                                 error.getStatus(),
                                                                 "Error response",
+                                                                headers,
                                                                 Optional.<byte[]>absent());
 
       remoteEndpoint.sendBytesByFuture(ByteBuffer.wrap(response.toByteArray()));

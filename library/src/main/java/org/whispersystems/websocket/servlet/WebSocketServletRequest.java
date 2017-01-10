@@ -70,6 +70,8 @@ public class WebSocketServletRequest implements HttpServletRequest {
     } else {
       inputStream = new BufferingServletInputStream(new byte[0]);
     }
+
+    headers.putAll(requestMessage.getHeaders());
   }
 
   @Override

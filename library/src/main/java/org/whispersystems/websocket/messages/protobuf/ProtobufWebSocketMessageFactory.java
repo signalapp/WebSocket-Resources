@@ -23,6 +23,8 @@ import org.whispersystems.websocket.messages.InvalidMessageException;
 import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 
+import java.util.List;
+
 public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory {
 
   @Override
@@ -35,6 +37,7 @@ public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory 
   @Override
   public WebSocketMessage createRequest(Optional<Long> requestId,
                                         String verb, String path,
+                                        List<String> headers,
                                         Optional<byte[]> body)
   {
     SubProtocol.WebSocketRequestMessage.Builder requestMessage =
@@ -50,6 +53,10 @@ public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory 
       requestMessage.setBody(ByteString.copyFrom(body.get()));
     }
 
+    if (headers != null) {
+      requestMessage.addAllHeaders(headers);
+    }
+
     SubProtocol.WebSocketMessage message
         = SubProtocol.WebSocketMessage.newBuilder()
                                       .setType(SubProtocol.WebSocketMessage.Type.REQUEST)
@@ -60,7 +67,7 @@ public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory 
   }
 
   @Override
-  public WebSocketMessage createResponse(long requestId, int status, String messageString, Optional<byte[]> body) {
+  public WebSocketMessage createResponse(long requestId, int status, String messageString, List<String> headers, Optional<byte[]> body) {
     SubProtocol.WebSocketResponseMessage.Builder responseMessage =
         SubProtocol.WebSocketResponseMessage.newBuilder()
                                             .setId(requestId)
@@ -69,6 +76,10 @@ public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory 
 
     if (body.isPresent()) {
       responseMessage.setBody(ByteString.copyFrom(body.get()));
+    }
+
+    if (headers != null) {
+      responseMessage.addAllHeaders(headers);
     }
 
     SubProtocol.WebSocketMessage message =
