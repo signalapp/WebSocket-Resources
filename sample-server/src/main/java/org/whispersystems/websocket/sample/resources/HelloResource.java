@@ -18,6 +18,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import java.util.LinkedList;
+
 import io.dropwizard.auth.Auth;
 
 @Path("/hello")
@@ -51,7 +53,7 @@ public class HelloResource {
   public Response askMe(@Auth HelloAccount account,
                         @WebSocketSession WebSocketSessionContext context)
   {
-    ListenableFuture<WebSocketResponseMessage> response = context.getClient().sendRequest("GET", "/hello", Optional.<byte[]>absent());
+    ListenableFuture<WebSocketResponseMessage> response = context.getClient().sendRequest("GET", "/hello", new LinkedList<String>(), Optional.<byte[]>absent());
     Futures.addCallback(response, new FutureCallback<WebSocketResponseMessage>() {
       @Override
       public void onSuccess(WebSocketResponseMessage result) {
