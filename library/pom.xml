@@ -8,13 +8,9 @@
         <maven>3.0.0</maven>
     </prerequisites>
 
+    <groupId>org.whispersystems</groupId>
     <artifactId>websocket-resources</artifactId>
-
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.whispersystems</groupId>
-        <version>0.4.1</version>
-    </parent>
+    <version>0.5.0</version>
 
     <name>WebSocket-Resources</name>
     <description>A Dropwizard library that lets you use Jersey-style Resources over WebSockets</description>
@@ -168,6 +164,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
 

@@ -8,13 +8,9 @@
         <maven>3.0.0</maven>
     </prerequisites>
 
+    <groupId>org.whispersystems</groupId>
     <artifactId>sample-server</artifactId>
-
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.whispersystems</groupId>
-        <version>0.4.1</version>
-    </parent>
+    <version>0.5.0</version>
 
     <name>WebSocket-Resources Sample Server Project</name>
     <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
