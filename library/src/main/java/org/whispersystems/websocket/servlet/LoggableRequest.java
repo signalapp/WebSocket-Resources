@@ -1,7 +1,6 @@
 package org.whispersystems.websocket.servlet;
 
 import org.eclipse.jetty.http.HttpFields;
-import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Authentication;
@@ -10,11 +9,9 @@ import org.eclipse.jetty.server.HttpChannelState;
 import org.eclipse.jetty.server.HttpInput;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.UserIdentity;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.Attributes;
-import org.eclipse.jetty.util.MultiMap;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -33,8 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -57,17 +52,12 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public HttpInput<?> getHttpInput() {
+  public HttpInput getHttpInput() {
     throw new AssertionError();
   }
 
   @Override
   public void addEventListener(EventListener listener) {
-    throw new AssertionError();
-  }
-
-  @Override
-  public void extractParameters() {
     throw new AssertionError();
   }
 
@@ -112,7 +102,7 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public HttpChannel<?> getHttpChannel() {
+  public HttpChannel getHttpChannel() {
     throw new AssertionError();
   }
 
@@ -372,17 +362,12 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public SessionManager getSessionManager() {
-    throw new AssertionError();
-  }
-
-  @Override
   public long getTimeStamp() {
     return System.currentTimeMillis();
   }
 
   @Override
-  public HttpURI getUri() {
+  public HttpURI getHttpURI() {
     return new HttpURI(getRequestURI());
   }
 
@@ -457,11 +442,6 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public HttpSession recoverNewSession(Object key) {
-    throw new AssertionError();
-  }
-
-  @Override
   public void removeAttribute(String name) {
     request.removeAttribute(name);
   }
@@ -472,12 +452,7 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public void saveNewSession(Object key, HttpSession session) {
-    throw new AssertionError();
-  }
-
-  @Override
-  public void setAsyncSupported(boolean supported) {
+  public void setAsyncSupported(boolean supported, String source) {
     throw new AssertionError();
   }
 
@@ -542,11 +517,6 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public void setMethod(HttpMethod httpMethod, String method) {
-    throw new AssertionError();
-  }
-
-  @Override
   public boolean isHead() {
     throw new AssertionError();
   }
@@ -587,22 +557,7 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public void setRequestURI(String requestURI) {
-    throw new AssertionError();
-  }
-
-  @Override
   public void setScheme(String scheme) {
-    throw new AssertionError();
-  }
-
-  @Override
-  public void setServerName(String host) {
-    throw new AssertionError();
-  }
-
-  @Override
-  public void setServerPort(int port) {
     throw new AssertionError();
   }
 
@@ -617,17 +572,12 @@ public class LoggableRequest extends Request {
   }
 
   @Override
-  public void setSessionManager(SessionManager sessionManager) {
-    throw new AssertionError();
-  }
-
-  @Override
   public void setTimeStamp(long ts) {
     throw new AssertionError();
   }
 
   @Override
-  public void setUri(HttpURI uri) {
+  public void setHttpURI(HttpURI uri) {
     throw new AssertionError();
   }
 

@@ -69,8 +69,7 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
 
     environment.jersey().register(new WebSocketSessionContextValueFactoryProvider.Binder());
     environment.jersey().register(new WebSocketAuthValueFactoryProvider.Binder());
-    environment.jersey().register(new JacksonMessageBodyProvider(environment.getObjectMapper(),
-                                                                 environment.getValidator()));
+    environment.jersey().register(new JacksonMessageBodyProvider(environment.getObjectMapper()));
   }
 
   public void start() throws ServletException {

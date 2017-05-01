@@ -4,14 +4,27 @@ import org.eclipse.jetty.http.HttpContent;
 import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.http.MetaData;
+import org.eclipse.jetty.io.Connection;
+import org.eclipse.jetty.io.EndPoint;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpChannel;
+import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpOutput;
+import org.eclipse.jetty.server.HttpTransport;
 import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadPendingException;
+import java.nio.channels.WritePendingException;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -25,7 +38,7 @@ public class LoggableResponse extends Response {
   }
 
   @Override
-  public void setHeaders(HttpContent httpContent) {
+  public void putHeaders(HttpContent httpContent, long contentLength, boolean etag) {
     throw new AssertionError();
   }
 
@@ -303,4 +316,134 @@ public class LoggableResponse extends Response {
   public String toString() {
     return response.toString();
   }
+
+  @Override
+  public MetaData.Response getCommittedMetaData() {
+    return new MetaData.Response(HttpVersion.HTTP_2, getStatus(), null);
+  }
+
+  @Override
+  public HttpChannel getHttpChannel()
+  {
+    return new HttpChannel(null, new HttpConfiguration(), new NullEndPoint(), null);
+  }
+
+  private static class NullEndPoint implements EndPoint {
+
+    @Override
+    public InetSocketAddress getLocalAddress() {
+      return null;
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+      return null;
+    }
+
+    @Override
+    public boolean isOpen() {
+      return false;
+    }
+
+    @Override
+    public long getCreatedTimeStamp() {
+      return 0;
+    }
+
+    @Override
+    public void shutdownOutput() {
+
+    }
+
+    @Override
+    public boolean isOutputShutdown() {
+      return false;
+    }
+
+    @Override
+    public boolean isInputShutdown() {
+      return false;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public int fill(ByteBuffer buffer) throws IOException {
+      return 0;
+    }
+
+    @Override
+    public boolean flush(ByteBuffer... buffer) throws IOException {
+      return false;
+    }
+
+    @Override
+    public Object getTransport() {
+      return null;
+    }
+
+    @Override
+    public long getIdleTimeout() {
+      return 0;
+    }
+
+    @Override
+    public void setIdleTimeout(long idleTimeout) {
+
+    }
+
+    @Override
+    public void fillInterested(Callback callback) throws ReadPendingException {
+
+    }
+
+    @Override
+    public boolean tryFillInterested(Callback callback) {
+      return false;
+    }
+
+    @Override
+    public boolean isFillInterested() {
+      return false;
+    }
+
+    @Override
+    public void write(Callback callback, ByteBuffer... buffers) throws WritePendingException {
+
+    }
+
+    @Override
+    public Connection getConnection() {
+      return null;
+    }
+
+    @Override
+    public void setConnection(Connection connection) {
+
+    }
+
+    @Override
+    public void onOpen() {
+
+    }
+
+    @Override
+    public void onClose() {
+
+    }
+
+    @Override
+    public boolean isOptimizedForDirectBuffers() {
+      return false;
+    }
+
+    @Override
+    public void upgrade(Connection newConnection) {
+
+    }
+  }
+
 }
