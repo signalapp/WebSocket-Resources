@@ -304,12 +304,12 @@ public class LoggableResponse extends Response {
 
   @Override
   public HttpFields getHttpFields() {
-    throw new AssertionError();
+    return new HttpFields();
   }
 
   @Override
   public long getContentCount() {
-    throw new AssertionError();
+    return 0;
   }
 
   @Override

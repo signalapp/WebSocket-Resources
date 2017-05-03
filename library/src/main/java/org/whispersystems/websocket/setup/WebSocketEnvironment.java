@@ -17,19 +17,34 @@
 package org.whispersystems.websocket.setup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import org.eclipse.jetty.server.RequestLog;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.auth.WebSocketAuthenticator;
+import org.whispersystems.websocket.configuration.WebSocketConfiguration;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 import org.whispersystems.websocket.messages.protobuf.ProtobufWebSocketMessageFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.validation.Validator;
 
-import io.dropwizard.Configuration;
+import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import io.dropwizard.jersey.DropwizardResourceConfig;
 import io.dropwizard.jersey.setup.JerseyContainerHolder;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.logging.AppenderFactory;
+import io.dropwizard.logging.async.AsyncAppenderFactory;
+import io.dropwizard.logging.filter.LevelFilterFactory;
+import io.dropwizard.logging.filter.NullLevelFilterFactory;
+import io.dropwizard.logging.layout.LayoutFactory;
+import io.dropwizard.request.logging.LogbackAccessRequestLog;
+import io.dropwizard.request.logging.LogbackAccessRequestLogFactory;
+import io.dropwizard.request.logging.RequestLogFactory;
+import io.dropwizard.request.logging.async.AsyncAccessEventAppenderFactory;
+import io.dropwizard.request.logging.layout.LogbackAccessRequestLayoutFactory;
 import io.dropwizard.server.AbstractServerFactory;
 import io.dropwizard.setup.Environment;
 
@@ -46,16 +61,20 @@ public class WebSocketEnvironment {
   private WebSocketMessageFactory  messageFactory;
   private WebSocketConnectListener connectListener;
 
-  public WebSocketEnvironment(Environment environment, Configuration configuration) {
+  public WebSocketEnvironment(Environment environment, WebSocketConfiguration configuration) {
     this(environment, configuration, 60000);
   }
 
-  public WebSocketEnvironment(Environment environment, Configuration configuration, long idleTimeoutMillis) {
+  public WebSocketEnvironment(Environment environment, WebSocketConfiguration configuration, long idleTimeoutMillis) {
+    this(environment, configuration.getRequestLog().build("websocket"), idleTimeoutMillis);
+  }
+
+  public WebSocketEnvironment(Environment environment, RequestLog requestLog, long idleTimeoutMillis) {
     DropwizardResourceConfig jerseyConfig = new DropwizardResourceConfig(environment.metrics());
 
     this.objectMapper           = environment.getObjectMapper();
     this.validator              = environment.getValidator();
-    this.requestLog             = ((AbstractServerFactory)configuration.getServerFactory()).getRequestLogFactory().build("websocket");
+    this.requestLog             = requestLog;
     this.jerseyServletContainer = new JerseyContainerHolder(new ServletContainer(jerseyConfig)  );
     this.jerseyEnvironment      = new JerseyEnvironment(jerseyServletContainer, jerseyConfig);
     this.messageFactory         = new ProtobufWebSocketMessageFactory();
