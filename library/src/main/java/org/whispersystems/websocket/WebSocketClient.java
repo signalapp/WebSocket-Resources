@@ -22,15 +22,14 @@ import com.google.common.util.concurrent.SettableFuture;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketException;
+import org.eclipse.jetty.websocket.api.WriteCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
@@ -58,16 +57,26 @@ public class WebSocketClient {
                                                                 List<String> headers,
                                                                 Optional<byte[]> body)
   {
-    long                                     requestId = generateRequestId();
-    SettableFuture<WebSocketResponseMessage> future    = SettableFuture.create();
+    final long                                     requestId = generateRequestId();
+    final SettableFuture<WebSocketResponseMessage> future    = SettableFuture.create();
 
     pendingRequestMapper.put(requestId, future);
 
     WebSocketMessage requestMessage = messageFactory.createRequest(Optional.of(requestId), verb, path, headers, body);
 
     try {
-      remoteEndpoint.sendBytes(ByteBuffer.wrap(requestMessage.toByteArray()));
-    } catch (IOException | WebSocketException e) {
+      remoteEndpoint.sendBytes(ByteBuffer.wrap(requestMessage.toByteArray()), new WriteCallback() {
+        @Override
+        public void writeFailed(Throwable x) {
+          logger.debug("Write failed", x);
+          pendingRequestMapper.remove(requestId);
+          future.setException(x);
+        }
+
+        @Override
+        public void writeSuccess() {}
+      });
+    } catch (WebSocketException e) {
       logger.debug("Write", e);
       pendingRequestMapper.remove(requestId);
       future.setException(e);
@@ -81,11 +90,7 @@ public class WebSocketClient {
   }
 
   private long generateRequestId() {
-    try {
-      return Math.abs(SecureRandom.getInstance("SHA1PRNG").nextLong());
-    } catch (NoSuchAlgorithmException e) {
-      throw new AssertionError(e);
-    }
+    return Math.abs(new SecureRandom().nextLong());
   }
 
 }
