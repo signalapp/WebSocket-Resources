@@ -13,7 +13,6 @@ import org.whispersystems.websocket.setup.WebSocketEnvironment;
 import javax.servlet.ServletRegistration;
 
 import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class Server extends Application<ServerConfiguration> {
@@ -22,9 +21,9 @@ public class Server extends Application<ServerConfiguration> {
   public void run(ServerConfiguration serverConfiguration, Environment environment)
       throws Exception
   {
-    WebSocketEnvironment           webSocketEnvironment    = new WebSocketEnvironment(environment, serverConfiguration);
-    HelloResource                  helloResource           = new HelloResource                 (serverConfiguration.getHelloResponse());
-    HelloAccountBasicAuthenticator helloBasicAuthenticator = new HelloAccountBasicAuthenticator(                                      );
+    WebSocketEnvironment           webSocketEnvironment    = new WebSocketEnvironment(environment, serverConfiguration.getWebSocketConfiguration());
+    HelloResource                  helloResource           = new HelloResource(serverConfiguration.getHelloResponse());
+    HelloAccountBasicAuthenticator helloBasicAuthenticator = new HelloAccountBasicAuthenticator();
 
 
     environment.jersey().register(helloResource);
