@@ -29,6 +29,7 @@ import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.List;
@@ -87,6 +88,14 @@ public class WebSocketClient {
 
   public void close(int code, String message) {
     session.close(code, message);
+  }
+
+  public void hardDisconnectQuietly() {
+    try {
+      session.disconnect();
+    } catch (IOException e) {
+      // quietly we said
+    }
   }
 
   private long generateRequestId() {
