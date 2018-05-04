@@ -1,6 +1,5 @@
 package org.whispersystems.websocket;
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.server.AbstractNCSARequestLog;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.RequestLog;
@@ -20,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,8 +37,8 @@ public class LoggableRequestResponseTest {
     WebSocketMessageFactory messageFactory  = mock(WebSocketMessageFactory.class);
 
     when(requestMessage.getVerb()).thenReturn("GET");
-    when(requestMessage.getBody()).thenReturn(Optional.<byte[]>absent());
-    when(requestMessage.getHeaders()).thenReturn(new HashMap<String, String>());
+    when(requestMessage.getBody()).thenReturn(Optional.empty());
+    when(requestMessage.getHeaders()).thenReturn(new HashMap<>());
     when(requestMessage.getPath()).thenReturn("/api/v1/test");
     when(requestMessage.getRequestId()).thenReturn(1L);
     when(requestMessage.hasRequestId()).thenReturn(true);

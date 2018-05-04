@@ -1,7 +1,8 @@
 package org.whispersystems.websocket.sample.auth;
 
-import com.google.common.base.Optional;
 import org.whispersystems.dropwizard.simpleauth.Authenticator;
+
+import java.util.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -17,6 +18,6 @@ public class HelloAccountBasicAuthenticator implements Authenticator<BasicCreden
       return Optional.of(new HelloAccount("moxie"));
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 }

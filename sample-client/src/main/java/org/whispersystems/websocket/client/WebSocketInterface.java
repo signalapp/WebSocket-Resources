@@ -1,6 +1,5 @@
 package org.whispersystems.websocket.client;
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -16,6 +15,7 @@ import org.whispersystems.websocket.messages.protobuf.ProtobufWebSocketMessageFa
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
+import java.util.Optional;
 
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public class WebSocketInterface {
@@ -61,12 +61,12 @@ public class WebSocketInterface {
   }
 
   public void sendRequest(long id, String verb, String path) throws IOException {
-    WebSocketMessage message = factory.createRequest(Optional.of(id), verb, path, new LinkedList<String>(), Optional.<byte[]>absent());
+    WebSocketMessage message = factory.createRequest(Optional.of(id), verb, path, new LinkedList<String>(), Optional.empty());
     session.getRemote().sendBytes(ByteBuffer.wrap(message.toByteArray()));
   }
 
   public void sendResponse(long id, int code, String message, byte[] body) throws IOException {
-    WebSocketMessage response = factory.createResponse(id, code, message, new LinkedList<String>(), Optional.fromNullable(body));
+    WebSocketMessage response = factory.createResponse(id, code, message, new LinkedList<String>(), Optional.ofNullable(body));
     session.getRemote().sendBytes(ByteBuffer.wrap(response.toByteArray()));
   }
 

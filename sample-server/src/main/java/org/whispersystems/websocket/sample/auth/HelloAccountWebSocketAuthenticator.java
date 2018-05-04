@@ -1,12 +1,12 @@
 package org.whispersystems.websocket.sample.auth;
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.websocket.api.UpgradeRequest;
 import org.whispersystems.websocket.auth.AuthenticationException;
 import org.whispersystems.websocket.auth.WebSocketAuthenticator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.dropwizard.auth.basic.BasicCredentials;
 
@@ -30,7 +30,7 @@ public class HelloAccountWebSocketAuthenticator implements WebSocketAuthenticato
       if (usernames == null || usernames.size() == 0 ||
           passwords == null || passwords.size() == 0)
       {
-        return Optional.absent();
+        return Optional.empty();
       }
 
       BasicCredentials credentials = new BasicCredentials(usernames.get(0), passwords.get(0));

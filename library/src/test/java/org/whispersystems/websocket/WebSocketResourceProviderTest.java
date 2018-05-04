@@ -1,6 +1,5 @@
 package org.whispersystems.websocket;
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.websocket.api.CloseStatus;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -33,7 +33,7 @@ public class WebSocketResourceProviderTest {
     WebSocketResourceProvider provider       = new WebSocketResourceProvider(contextHandler, requestLog,
                                                                              null,
                                                                              new ProtobufWebSocketMessageFactory(),
-                                                                             Optional.<WebSocketConnectListener>absent(),
+                                                                             Optional.empty(),
                                                                              30000);
 
     Session        session = mock(Session.class       );
@@ -54,7 +54,7 @@ public class WebSocketResourceProviderTest {
     HttpServlet                    servlet       = mock(HttpServlet.class           );
     WebSocketAuthenticator<String> authenticator = mock(WebSocketAuthenticator.class);
     RequestLog                     requestLog    = mock(RequestLog.class            );
-    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, requestLog, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.<WebSocketConnectListener>absent(), 30000);
+    WebSocketResourceProvider      provider      = new WebSocketResourceProvider(servlet, requestLog, Optional.of((WebSocketAuthenticator)authenticator), new ProtobufWebSocketMessageFactory(), Optional.empty(), 30000);
 
     Session        session        = mock(Session.class       );
     RemoteEndpoint remoteEndpoint = mock(RemoteEndpoint.class);

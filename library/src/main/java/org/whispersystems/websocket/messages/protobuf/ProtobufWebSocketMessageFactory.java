@@ -17,13 +17,13 @@
 
 package org.whispersystems.websocket.messages.protobuf;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.ByteString;
 import org.whispersystems.websocket.messages.InvalidMessageException;
 import org.whispersystems.websocket.messages.WebSocketMessage;
 import org.whispersystems.websocket.messages.WebSocketMessageFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProtobufWebSocketMessageFactory implements WebSocketMessageFactory {
 

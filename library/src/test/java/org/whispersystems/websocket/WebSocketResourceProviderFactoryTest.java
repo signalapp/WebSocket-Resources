@@ -1,7 +1,6 @@
 package org.whispersystems.websocket;
 
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
@@ -12,6 +11,7 @@ import org.whispersystems.websocket.setup.WebSocketEnvironment;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.util.Optional;
 
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import static org.junit.Assert.*;
@@ -29,7 +29,7 @@ public class WebSocketResourceProviderFactoryTest {
     ServletUpgradeResponse response          = mock(ServletUpgradeResponse.class);
 
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenReturn(Optional.absent());
+    when(authenticator.authenticate(eq(request))).thenReturn(Optional.empty());
     when(environment.jersey()).thenReturn(jerseyEnvironment);
 
     WebSocketResourceProviderFactory factory    = new WebSocketResourceProviderFactory(environment);

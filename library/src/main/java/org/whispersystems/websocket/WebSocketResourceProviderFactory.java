@@ -16,7 +16,6 @@
  */
 package org.whispersystems.websocket;
 
-import com.google.common.base.Optional;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.AttributesMap;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
@@ -52,6 +51,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
@@ -79,7 +79,7 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
   @Override
   public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
     try {
-      Optional<WebSocketAuthenticator> authenticator = Optional.fromNullable(environment.getAuthenticator());
+      Optional<WebSocketAuthenticator> authenticator = Optional.ofNullable(environment.getAuthenticator());
       Object                           authenticated = null;
 
       if (authenticator.isPresent()) {
@@ -97,7 +97,7 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
                                            this.environment.getRequestLog(),
                                            authenticated,
                                            this.environment.getMessageFactory(),
-                                           Optional.fromNullable(this.environment.getConnectListener()),
+                                           Optional.ofNullable(this.environment.getConnectListener()),
                                            this.environment.getIdleTimeoutMillis());
     } catch (AuthenticationException | IOException e) {
       logger.warn("Authentication failure", e);

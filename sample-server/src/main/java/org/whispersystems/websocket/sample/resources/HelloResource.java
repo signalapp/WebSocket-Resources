@@ -1,7 +1,6 @@
 package org.whispersystems.websocket.sample.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -19,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import io.dropwizard.auth.Auth;
 
@@ -53,11 +53,11 @@ public class HelloResource {
   public Response askMe(@Auth HelloAccount account,
                         @WebSocketSession WebSocketSessionContext context)
   {
-    ListenableFuture<WebSocketResponseMessage> response = context.getClient().sendRequest("GET", "/hello", new LinkedList<String>(), Optional.<byte[]>absent());
+    ListenableFuture<WebSocketResponseMessage> response = context.getClient().sendRequest("GET", "/hello", new LinkedList<>(), Optional.empty());
     Futures.addCallback(response, new FutureCallback<WebSocketResponseMessage>() {
       @Override
       public void onSuccess(WebSocketResponseMessage result) {
-        logger.warn("Got response: " + new String(result.getBody().orNull()));
+        logger.warn("Got response: " + new String(result.getBody().orElse(null)));
       }
 
       @Override
