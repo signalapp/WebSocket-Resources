@@ -10,7 +10,7 @@
 
     <groupId>org.whispersystems</groupId>
     <artifactId>sample-client</artifactId>
-    <version>0.5.3</version>
+    <version>0.5.5</version>
 
     <name>WebSocket-Resources Sample Client Project</name>
     <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.whispersystems</groupId>
             <artifactId>websocket-resources</artifactId>
-            <version>0.5.3</version>
+            <version>0.5.5</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
