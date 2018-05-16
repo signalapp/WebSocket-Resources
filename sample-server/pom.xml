@@ -10,7 +10,7 @@
 
     <groupId>org.whispersystems</groupId>
     <artifactId>sample-server</artifactId>
-    <version>0.5.5</version>
+    <version>0.5.6</version>
 
     <name>WebSocket-Resources Sample Server Project</name>
     <url>https://github.com/WhisperSystems/WebSocket-Resources</url>
