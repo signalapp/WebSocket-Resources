@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014 Open WhisperSystems
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,10 @@ public class WebSocketSessionContext {
     }
 
     throw new IllegalArgumentException("No authenticated type for: " + clazz);
+  }
+
+  public Object getAuthenticated() {
+    return authenticated;
   }
 
   public synchronized void addListener(WebSocketEventListener listener) {

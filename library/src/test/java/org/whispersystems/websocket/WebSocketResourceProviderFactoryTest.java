@@ -41,33 +41,6 @@ public class WebSocketResourceProviderFactoryTest {
   }
 
   @Test
-  public void testNoAuthorization() throws ServletException, AuthenticationException {
-    JerseyEnvironment      jerseyEnvironment = mock(JerseyEnvironment.class     );
-    WebSocketEnvironment   environment       = mock(WebSocketEnvironment.class  );
-    ServletUpgradeRequest  request           = mock(ServletUpgradeRequest.class );
-    ServletUpgradeResponse response          = mock(ServletUpgradeResponse.class);
-    Session                session           = mock(Session.class               );
-
-    when(environment.getAuthenticator()).thenReturn(null);
-    when(environment.jersey()).thenReturn(jerseyEnvironment);
-
-    WebSocketResourceProviderFactory factory    = new WebSocketResourceProviderFactory(environment);
-    Object                           connection = factory.createWebSocket(request, response);
-
-    assertNotNull(connection);
-    verifyNoMoreInteractions(response);
-
-    ((WebSocketResourceProvider)connection).onWebSocketConnect(session);
-
-    try {
-      Object result = (((WebSocketResourceProvider) connection).getContext().getAuthenticated(Object.class));
-      throw new AssertionError("Should not return: " + result);
-    } catch (IllegalArgumentException iae) {
-      // Good
-    }
-  }
-
-  @Test
   public void testValidAuthorization() throws AuthenticationException, ServletException {
     JerseyEnvironment      jerseyEnvironment = mock(JerseyEnvironment.class     );
     WebSocketEnvironment   environment       = mock(WebSocketEnvironment.class  );
@@ -90,8 +63,8 @@ public class WebSocketResourceProviderFactoryTest {
 
     ((WebSocketResourceProvider)connection).onWebSocketConnect(session);
 
-    assertNotNull(((WebSocketResourceProvider) connection).getContext().getAuthenticated(Account.class));
-    assertEquals(((WebSocketResourceProvider)connection).getContext().getAuthenticated(Account.class), account);
+    assertNotNull(((WebSocketResourceProvider) connection).getContext().getAuthenticated());
+    assertEquals(((WebSocketResourceProvider)connection).getContext().getAuthenticated(), account);
   }
 
   private static class Account {}

@@ -15,6 +15,7 @@ import org.whispersystems.websocket.servlet.WebSocketServletRequest;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.Principal;
+import java.util.Optional;
 
 import io.dropwizard.auth.Auth;
 
@@ -34,21 +35,65 @@ public class WebSocketAuthValueFactoryProvider extends AbstractValueFactoryProvi
       return null;
     }
 
-    return new AbstractContainerRequestValueFactory() {
-      public Object provide() {
-        Principal principal = getContainerRequest().getSecurityContext().getUserPrincipal();
+    if (parameter.getRawType() == Optional.class) {
+      return new OptionalContainerRequestValueFactory(parameter);
+    } else {
+      return new StandardContainerRequestValueFactory(parameter);
+    }
+  }
 
-        if (principal == null) {
-          throw new IllegalStateException("Cannot inject a custom principal into unauthenticated request");
-        }
+  private static class OptionalContainerRequestValueFactory extends AbstractContainerRequestValueFactory {
+    private final Parameter parameter;
 
-        if (!(principal instanceof WebSocketServletRequest.ContextPrincipal)) {
-          throw new IllegalArgumentException("Cannot inject a non-WebSocket AuthPrincipal into request");
-        }
+    private OptionalContainerRequestValueFactory(Parameter parameter) {
+      this.parameter = parameter;
+    }
 
-        return ((WebSocketServletRequest.ContextPrincipal)principal).getContext().getAuthenticated(parameter.getRawType());
+    @Override
+    public Object provide() {
+      Principal principal = getContainerRequest().getSecurityContext().getUserPrincipal();
+
+      if (principal != null && !(principal instanceof WebSocketServletRequest.ContextPrincipal)) {
+        throw new IllegalArgumentException("Can't inject non-ContextPrincipal into request");
       }
-    };
+
+      if (principal == null) return Optional.empty();
+      else                   return Optional.ofNullable(((WebSocketServletRequest.ContextPrincipal)principal).getContext().getAuthenticated());
+
+    }
+  }
+
+  private static class StandardContainerRequestValueFactory extends AbstractContainerRequestValueFactory {
+    private final Parameter parameter;
+
+    private StandardContainerRequestValueFactory(Parameter parameter) {
+      this.parameter = parameter;
+    }
+
+    @Override
+    public Object provide() {
+      Principal principal = getContainerRequest().getSecurityContext().getUserPrincipal();
+
+      if (principal == null) {
+        throw new IllegalStateException("Cannot inject a custom principal into unauthenticated request");
+      }
+
+      if (!(principal instanceof WebSocketServletRequest.ContextPrincipal)) {
+        throw new IllegalArgumentException("Cannot inject a non-WebSocket AuthPrincipal into request");
+      }
+
+      Object authenticated = ((WebSocketServletRequest.ContextPrincipal)principal).getContext().getAuthenticated();
+
+      if (authenticated == null) {
+        throw new IllegalArgumentException("No authenticated resource for non-optional request");
+      }
+
+      if (!parameter.getRawType().isAssignableFrom(authenticated.getClass())) {
+        throw new IllegalArgumentException("Authenticated principal is of the wrong type: " + authenticated.getClass() + " looking for: " + parameter.getRawType());
+      }
+
+      return parameter.getRawType().cast(authenticated);
+    }
   }
 
   @Singleton
