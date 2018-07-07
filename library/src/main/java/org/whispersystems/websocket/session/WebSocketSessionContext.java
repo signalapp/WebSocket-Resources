@@ -43,7 +43,7 @@ public class WebSocketSessionContext {
       return clazz.cast(authenticated);
     }
 
-    throw new IllegalArgumentException("No authenticated type for: " + clazz);
+    throw new IllegalArgumentException("No authenticated type for: " + clazz + ", we have: " + authenticated);
   }
 
   public Object getAuthenticated() {

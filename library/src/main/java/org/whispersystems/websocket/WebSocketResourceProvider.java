@@ -154,7 +154,7 @@ public class WebSocketResourceProvider implements WebSocketListener {
       servletResponse.flushBuffer();
       requestLog.log(new LoggableRequest(servletRequest), new LoggableResponse(servletResponse));
     } catch (IOException | ServletException e) {
-      logger.warn("Servlet Error", e);
+      logger.warn("Servlet Error: " + requestMessage.getVerb() + " " + requestMessage.getPath() + "\n" + requestMessage.getBody(), e);
       sendErrorResponse(requestMessage, Response.status(500).build());
     }
   }
