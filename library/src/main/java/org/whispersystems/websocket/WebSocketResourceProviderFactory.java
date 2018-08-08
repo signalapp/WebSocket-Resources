@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.auth.AuthenticationException;
 import org.whispersystems.websocket.auth.WebSocketAuthenticator;
+import org.whispersystems.websocket.auth.WebSocketAuthenticator.AuthenticationResult;
 import org.whispersystems.websocket.auth.internal.WebSocketAuthValueFactoryProvider;
 import org.whispersystems.websocket.session.WebSocketSessionContextValueFactoryProvider;
 import org.whispersystems.websocket.setup.WebSocketEnvironment;
@@ -83,13 +84,13 @@ public class WebSocketResourceProviderFactory extends WebSocketServlet implement
       Object                           authenticated = null;
 
       if (authenticator.isPresent()) {
-        Optional<Object> authenticatedOptional = authenticator.get().authenticate(request);
+        AuthenticationResult authenticationResult = authenticator.get().authenticate(request);
 
-        if (!authenticatedOptional.isPresent()) {
+        if (!authenticationResult.getUser().isPresent() && authenticationResult.isRequired()) {
           response.sendForbidden("Unauthorized");
           return null;
         } else {
-          authenticated = authenticatedOptional.get();
+          authenticated = authenticationResult.getUser().orElse(null);
         }
       }
 

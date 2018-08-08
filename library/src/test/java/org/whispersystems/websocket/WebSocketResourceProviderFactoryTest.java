@@ -29,7 +29,7 @@ public class WebSocketResourceProviderFactoryTest {
     ServletUpgradeResponse response          = mock(ServletUpgradeResponse.class);
 
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenReturn(Optional.empty());
+    when(authenticator.authenticate(eq(request))).thenReturn(new WebSocketAuthenticator.AuthenticationResult<>(Optional.empty(), true));
     when(environment.jersey()).thenReturn(jerseyEnvironment);
 
     WebSocketResourceProviderFactory factory    = new WebSocketResourceProviderFactory(environment);
@@ -51,7 +51,7 @@ public class WebSocketResourceProviderFactoryTest {
     Account                account           = new Account();
 
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenReturn(Optional.of(account));
+    when(authenticator.authenticate(eq(request))).thenReturn(new WebSocketAuthenticator.AuthenticationResult<>(Optional.of(account), true));
     when(environment.jersey()).thenReturn(jerseyEnvironment);
 
     WebSocketResourceProviderFactory factory    = new WebSocketResourceProviderFactory(environment);

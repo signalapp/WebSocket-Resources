@@ -40,7 +40,7 @@ public class WebSocketResourceProviderTest {
     UpgradeRequest request = mock(UpgradeRequest.class);
 
     when(session.getUpgradeRequest()).thenReturn(request);
-    when(authenticator.authenticate(request)).thenReturn(Optional.of("fooz"));
+    when(authenticator.authenticate(request)).thenReturn(new WebSocketAuthenticator.AuthenticationResult<>(Optional.of("fooz"), true));
 
     provider.onWebSocketConnect(session);
 
@@ -62,7 +62,7 @@ public class WebSocketResourceProviderTest {
 
     when(session.getUpgradeRequest()).thenReturn(request);
     when(session.getRemote()).thenReturn(remoteEndpoint);
-    when(authenticator.authenticate(request)).thenReturn(Optional.of("foo"));
+    when(authenticator.authenticate(request)).thenReturn(new WebSocketAuthenticator.AuthenticationResult<>(Optional.of("foo"), true));
 
     provider.onWebSocketConnect(session);
 

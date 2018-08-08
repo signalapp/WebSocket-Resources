@@ -19,7 +19,7 @@ public class HelloAccountWebSocketAuthenticator implements WebSocketAuthenticato
   }
 
   @Override
-  public Optional<HelloAccount> authenticate(UpgradeRequest request)
+  public AuthenticationResult<HelloAccount> authenticate(UpgradeRequest request)
       throws AuthenticationException
   {
     try {
@@ -30,11 +30,11 @@ public class HelloAccountWebSocketAuthenticator implements WebSocketAuthenticato
       if (usernames == null || usernames.size() == 0 ||
           passwords == null || passwords.size() == 0)
       {
-        return Optional.empty();
+        return new AuthenticationResult<>(Optional.empty(), false);
       }
 
       BasicCredentials credentials = new BasicCredentials(usernames.get(0), passwords.get(0));
-      return basicAuthenticator.authenticate(credentials);
+      return new AuthenticationResult<>(basicAuthenticator.authenticate(credentials), true);
     } catch (io.dropwizard.auth.AuthenticationException e) {
       throw new AuthenticationException(e);
     }

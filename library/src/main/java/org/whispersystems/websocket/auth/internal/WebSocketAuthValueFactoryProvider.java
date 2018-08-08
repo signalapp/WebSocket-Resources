@@ -14,6 +14,7 @@ import org.whispersystems.websocket.servlet.WebSocketServletRequest;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.WebApplicationException;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -85,7 +86,7 @@ public class WebSocketAuthValueFactoryProvider extends AbstractValueFactoryProvi
       Object authenticated = ((WebSocketServletRequest.ContextPrincipal)principal).getContext().getAuthenticated();
 
       if (authenticated == null) {
-        throw new IllegalArgumentException("No authenticated resource for non-optional request");
+        throw new WebApplicationException("Authenticated resource", 401);
       }
 
       if (!parameter.getRawType().isAssignableFrom(authenticated.getClass())) {

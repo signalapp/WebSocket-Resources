@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import io.dropwizard.auth.Auth;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @Path("/hello")
 public class HelloResource {
 
@@ -46,6 +47,15 @@ public class HelloResource {
   @Produces("text/plain")
   public String saySpecialHello(@Auth HelloAccount account) {
     return "Hello " + account.getUsername();
+  }
+
+  @GET
+  @Path("/optional")
+  @Timed
+  @Produces("text/plain")
+  public String sayOptionalHello(@Auth Optional<HelloAccount> account) {
+    if (account.isPresent()) return account.get().getUsername();
+    else                     return "missing";
   }
 
   @GET
