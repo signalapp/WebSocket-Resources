@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.whispersystems</groupId>
             <artifactId>websocket-resources</artifactId>
-            <version>0.5.8</version>
+            <version>0.5.9</version>
         </dependency>
         <dependency>
             <groupId>org.whispersystems</groupId>
