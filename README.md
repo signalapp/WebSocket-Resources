@@ -214,6 +214,6 @@ A WebSocketClient can then be issued to transmit requests:
 License
 ---------------------
 
-Copyright 2014 Open Whisper Systems
+Copyright 2013-2019 Open Whisper Systems
 
 Licensed under the AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
